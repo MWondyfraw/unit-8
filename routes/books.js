@@ -36,12 +36,16 @@ router.post("/new", async (req, res) => {
 });
 
 // Get a particular book
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   const book = await Book.findByPk(req.params.id);
   if (book) {
     res.render("books/update", { book: book, title: book.title });
   } else {
-    res.sendStatus(404);
+    // res.sendStatus(404);
+    const error = new Error();
+    error.status = 404;
+    error.message = "The requested book not found";
+    next(error);
   }
 });
 
